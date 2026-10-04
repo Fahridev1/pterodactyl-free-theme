@@ -28,7 +28,7 @@ set -e
 #                                                                                    #
 ######################################################################################
 
-export GITHUB_SOURCE="master"
+export GITHUB_SOURCE="main"
 export SCRIPT_RELEASE="v1.0.0"
 export GITHUB_BASE_URL="https://raw.githubusercontent.com/Fahridev1/pterodactyl-free-theme"
 
@@ -50,7 +50,7 @@ source /tmp/lib.sh
 execute() {
   echo -e "\n\n* nightpanel-installer $(date) \n\n" >>$LOG_PATH
 
-  [[ "$1" == *"canary"* ]] && export GITHUB_SOURCE="master" && export SCRIPT_RELEASE="canary"
+  [[ "$1" == *"canary"* ]] && export GITHUB_SOURCE="main" && export SCRIPT_RELEASE="canary"
   update_lib_source
   run_ui "${1//_canary/}" |& tee -a $LOG_PATH
 

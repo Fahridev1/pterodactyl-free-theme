@@ -174,10 +174,9 @@ set_folder_permissions() {
 insert_cronjob() {
   step "Memasang cronjob.."
 
-  crontab -l | {
-    cat
-    output "* * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
-  } | crontab -
+  local CRON_LINE="* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
+
+  (crontab -l 2>/dev/null | grep -vF "artisan schedule:run"; echo "$CRON_LINE") | crontab -
 
   success "Cronjob terpasang!"
 }
