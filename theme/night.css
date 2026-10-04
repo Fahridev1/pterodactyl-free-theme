@@ -1,0 +1,103 @@
+/* NightPanel - tema malam untuk Pterodactyl Panel 1.x
+   Dipasang lewat ui/theme.sh. Hapus dengan menu "Hapus tema". */
+
+:root {
+  --n-card: rgba(14, 22, 58, .58);
+  --n-card-hover: rgba(24, 38, 92, .70);
+  --n-line: rgba(140, 170, 255, .20);
+  --n-moon: #dbe7ff;
+  --n-amber: #f4a93b;
+  --n-blue: #4c7dff;
+}
+
+html { background: #070b24; }
+
+/* Latar gambar (fixed, di belakang semua konten) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(5, 8, 28, .50) 0%, rgba(5, 8, 28, .74) 100%),
+    url("bg.jpg") center / cover no-repeat;
+}
+html body,
+body.bg-neutral-50, body.bg-neutral-800, body.bg-neutral-900 {
+  background: transparent !important;
+  color: var(--n-moon);
+}
+
+/* Warna panel yang pakai class tailwind statis (navbar, kartu, dll) */
+.bg-neutral-900, .bg-gray-900 {
+  background-color: rgba(7, 11, 36, .72) !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.bg-neutral-800, .bg-gray-800,
+.bg-neutral-700, .bg-gray-700,
+.bg-neutral-600, .bg-gray-600 {
+  background-color: var(--n-card) !important;
+}
+
+/* Baris server di dashboard */
+a[href^="/server/"] {
+  background: var(--n-card) !important;
+  border: 1px solid var(--n-line) !important;
+  border-radius: 12px !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+a[href^="/server/"]:hover {
+  background: var(--n-card-hover) !important;
+  border-color: var(--n-amber) !important;
+  transform: translateY(-2px);
+}
+a[href^="/server/"] .icon { background: rgba(76, 125, 255, .28) !important; }
+
+/* Input */
+input:not([type=checkbox]):not([type=radio]):not([type=range]),
+textarea, select {
+  background-color: rgba(7, 11, 36, .55) !important;
+  border-color: var(--n-line) !important;
+  color: var(--n-moon) !important;
+  border-radius: 8px !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--n-amber) !important;
+  box-shadow: 0 0 0 3px rgba(244, 169, 59, .22) !important;
+}
+
+/* Tombol: kelas n-btn-* dipasang otomatis oleh night.js sesuai warna aslinya */
+button { border-radius: 8px; transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
+button:not(:disabled):hover { transform: translateY(-1px); filter: brightness(1.12); }
+button:not(:disabled):active { transform: translateY(0); }
+.n-btn-primary { background-image: linear-gradient(135deg, #3b6cff, #6f4dff) !important; box-shadow: 0 4px 16px rgba(76, 125, 255, .35); }
+.n-btn-green   { background-image: linear-gradient(135deg, #2f9e5c, #58c27d) !important; box-shadow: 0 4px 16px rgba(63, 160, 100, .30); }
+.n-btn-red     { background-image: linear-gradient(135deg, #d6455d, #ff6b4a) !important; box-shadow: 0 4px 16px rgba(220, 70, 90, .30); }
+
+/* Tab / link */
+a { transition: color .15s ease; }
+a:hover { color: var(--n-amber); }
+::selection { background: rgba(244, 169, 59, .35); }
+::-webkit-scrollbar-thumb { -webkit-box-shadow: inset 0 0 0 1px rgba(140, 170, 255, .45), inset 0 0 0 4px #1b2a6b !important; }
+
+/* Pop up sambutan */
+.night-welcome {
+  position: fixed; top: 22px; left: 50%; z-index: 99999;
+  display: flex; align-items: center; gap: 14px;
+  max-width: calc(100vw - 32px); padding: 14px 22px;
+  color: var(--n-moon); cursor: pointer;
+  background: rgba(10, 16, 48, .82);
+  border: 1px solid rgba(244, 169, 59, .55); border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .5), 0 0 24px rgba(244, 169, 59, .22);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  transform: translate(-50%, -140%); opacity: 0;
+  transition: transform .5s cubic-bezier(.2, .9, .3, 1.2), opacity .4s ease;
+}
+.night-welcome.show { transform: translate(-50%, 0); opacity: 1; }
+.night-welcome-moon { font-size: 28px; line-height: 1; }
+.night-welcome-title { font-weight: 600; font-size: 16px; }
+.night-welcome-sub { font-size: 13px; opacity: .75; margin-top: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .night-welcome, a[href^="/server/"], button { transition: none; }
+}
