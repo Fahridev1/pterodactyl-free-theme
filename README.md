@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ainimuslimah10/pterodactyl-theme-free"><img alt="Repo" src="https://img.shields.io/badge/GitHub-Repo-1f2a5a?style=for-the-badge&logo=github&logoColor=white"></a>
+  <a href="https://github.com/Fahridev1/pterodactyl-free-theme"><img alt="Repo" src="https://img.shields.io/badge/GitHub-Repo-1f2a5a?style=for-the-badge&logo=github&logoColor=white"></a>
   <a href="#cara-pakai"><img alt="Install" src="https://img.shields.io/badge/Install-Sekarang-e8a33d?style=for-the-badge&logo=gnubash&logoColor=white"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-GPLv3-3b5bdb?style=for-the-badge"></a>
 </p>
@@ -29,13 +29,13 @@
 Jalankan sebagai root:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/ainimuslimah10/pterodactyl-theme-free/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/Fahridev1/pterodactyl-free-theme/master/install.sh)
 ```
 
 Lewati pertanyaan username:
 
 ```bash
-INSTALLER_USER=fahri bash <(curl -s https://raw.githubusercontent.com/ainimuslimah10/pterodactyl-theme-free/master/install.sh)
+INSTALLER_USER=fahri bash <(curl -s https://raw.githubusercontent.com/Fahridev1/pterodactyl-free-theme/master/install.sh)
 ```
 
 ## 🌌 Tema web Panel
@@ -92,7 +92,7 @@ _\* Indicates an operating system and release that previously was supported by t
 To use the installation scripts, simply run this command as root. The script will ask you whether you would like to install just the panel, just Wings or both.
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/ainimuslimah10/pterodactyl-theme-free/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/Fahridev1/pterodactyl-free-theme/master/install.sh)
 ```
 
 _Note: On some systems, it's required to be already logged in as root before executing the one-line command (where `sudo` is in front of the command does not work)._

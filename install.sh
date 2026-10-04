@@ -21,7 +21,7 @@ set -e
 #   You should have received a copy of the GNU General Public License                #
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/main/LICENSE #
 #                                                                                    #
 # This script is not associated with the official Pterodactyl Project.               #
 # https://github.com/pterodactyl-installer/pterodactyl-installer                     #
@@ -30,7 +30,7 @@ set -e
 
 export GITHUB_SOURCE="master"
 export SCRIPT_RELEASE="v1.0.0"
-export GITHUB_BASE_URL="https://raw.githubusercontent.com/ainimuslimah10/pterodactyl-theme-free"
+export GITHUB_BASE_URL="https://raw.githubusercontent.com/Fahridev1/pterodactyl-free-theme"
 
 LOG_PATH="/var/log/nightpanel-installer.log"
 
@@ -43,7 +43,7 @@ fi
 
 # Always remove lib.sh, before downloading it
 [ -f /tmp/lib.sh ] && rm -rf /tmp/lib.sh
-curl -sSL -o /tmp/lib.sh "$GITHUB_BASE_URL"/master/lib/lib.sh
+curl -sSL -o /tmp/lib.sh "$GITHUB_BASE_URL"/main/lib/lib.sh
 # shellcheck source=lib/lib.sh
 source /tmp/lib.sh
 
