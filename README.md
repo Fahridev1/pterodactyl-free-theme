@@ -23,6 +23,7 @@
 - Instalasi otomatis Panel (dependensi, database, cronjob, nginx) dan Wings (Docker, systemd).
 - Opsional: Let's Encrypt dan firewall otomatis.
 - Uninstall Panel dan Wings.
+- Tema admin panel + **NightGuard**, proteksi DDoS otomatis (lihat di bawah).
 
 ## 🚀 Cara pakai
 
@@ -47,6 +48,43 @@ Menu **"Pasang / hapus tema Night"** di installer memasang tema malam ke Panel y
 - Pop up **"Hai, selamat datang @username!"** sekali per sesi setelah login.
 
 Tema juga ditawarkan otomatis di akhir instalasi Panel. Update Pterodactyl akan menimpa `wrapper.blade.php`, jadi jalankan menu tema lagi setelah update. Pilih menu hapus untuk kembali ke tampilan asli.
+
+### 🖥️ Tema admin panel
+
+Menu tema yang sama juga memasang tema ke area `/admin` (AdminLTE): header & sidebar kaca, kartu, tabel, form, tombol, tab, modal, dan statistik berwarna dengan gaya yang sama seperti dashboard server. Update Pterodactyl akan menimpa `admin.blade.php`, jalankan menu tema lagi setelah update.
+
+## 🛡️ NightGuard (anti-DDoS otomatis)
+
+Menu **"Pasang / hapus NightGuard"** memasang proteksi untuk web panel (port 80/443):
+
+- **Rate limit nginx**: batas request per IP, batas koneksi simultan, batas percobaan login, timeout anti-Slowloris. Lalu lintas Wings → Panel (`/api/remote/`) punya zona longgar sendiri, dan IP node Wings otomatis di-whitelist.
+- **Auto-deteksi**: daemon `nightguard` memantau total koneksi, `SYN_RECV` (SYN flood), jumlah IP yang kena rate limit, dan lonjakan penolakan. Salah satu melewati ambang → **mode ketat** otomatis (rate limit diperketat + nginx di-reload), lalu kembali normal setelah tenang.
+- **Auto-blokir**: IP pelanggar diblokir lewat firewall (ipset) atau daftar deny nginx. Durasi naik kalau mengulang: 1 jam → 6 jam → 1 hari → 7 hari.
+- **Pengerasan kernel**: SYN cookies, anti-spoofing, backlog lebih besar.
+- Mendukung panel di belakang Cloudflare (real IP, blokir lewat nginx, opsional otomatis "Under Attack Mode" lewat API) dan notifikasi Discord.
+- Dashboard admin (tema Night) menampilkan status proteksi live.
+
+```bash
+nightguard status          # kondisi saat ini
+nightguard list            # IP yang diblokir
+nightguard unban 1.2.3.4   # buka blokir
+nightguard attack | calm   # uji coba mode serangan
+nano /etc/nightguard/nightguard.conf   # ubah ambang & whitelist
+```
+
+> NightGuard melindungi web panel dari serangan layer 7 dan SYN flood skala kecil-menengah. Serangan volumetrik besar (yang menjenuhkan bandwidth server) hanya bisa ditahan di tingkat provider atau Cloudflare, dan port game server Wings tidak tercakup.
+
+## 🥚 Nest & Egg bawaan
+
+Menu **"Tambah nest + egg Nodejs, Python, dan Minecraft Bedrock"** membuat 3 nest dan mengimpor egg dari folder `eggs/` ke Panel yang sudah terinstall:
+
+| Nest | Egg | File |
+| ---- | --- | ---- |
+| Nodejs | BOT WHATSAPP | `eggs/egg-botwa-versi-new.json` |
+| Python | python generic | `eggs/python-generic.json` |
+| Minecraft Bedrock | Vanilla Bedrock | `eggs/vanilla-bedrock.json` |
+
+Nest atau egg yang sudah ada dilewati, jadi aman dijalankan ulang. Lewati unduhan GitHub dengan `EGG_DIR=/path/ke/eggs`, atau pakai folder Panel lain dengan `PANEL_DIR=/path/ke/panel`.
 
 ## 🏷️ Ganti nama / repo
 

@@ -2,6 +2,15 @@
 
 This project follows the [semantic versioning](https://semver.org) convention. Changelog points should be divided into fixed, changed, or added.
 
+## Unreleased
+
+### Added
+
+- nests: menu + `ui/nests.sh` untuk membuat nest Nodejs, Python, dan Minecraft Bedrock lalu mengimpor egg dari folder `eggs/` (aman dijalankan ulang); ditawarkan juga setelah instalasi Panel
+- theme: tema admin panel (`night-admin.css/js`) untuk area `/admin`, senada dengan dashboard server
+- ddos: NightGuard, anti-DDoS otomatis (rate limit nginx, auto-deteksi serangan, auto-blokir, mode ketat, pengerasan kernel, dukungan Cloudflare)
+- install: menu baru untuk memasang/menghapus NightGuard; ditawarkan juga setelah instalasi Panel
+
 ## v1.3.0 (released on 2026-06-09)
 
 ### Fixed

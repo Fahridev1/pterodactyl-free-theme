@@ -262,6 +262,24 @@ ask_theme() {
   fi
 }
 
+ask_ddos() {
+  echo -e -n "\n${COLOR_YELLOW}›${COLOR_NC} Pasang NightGuard (anti-DDoS otomatis: rate limit, auto-blokir, mode ketat) sekarang? (y/N): "
+  read -r CONFIRM_DDOS
+  if [[ "$CONFIRM_DDOS" =~ [Yy] ]]; then
+    GUARD_ACTION=install bash <(curl -sSL "$GITHUB_URL"/ui/ddos.sh) || warning "NightGuard gagal dipasang. Bisa dicoba lagi lewat menu utama."
+  fi
+}
+
+ask_nests() {
+  echo -e -n "\n${COLOR_YELLOW}›${COLOR_NC} Tambah nest + egg Nodejs, Python, dan Minecraft Bedrock sekarang? (y/N): "
+  read -r CONFIRM_NESTS
+  if [[ "$CONFIRM_NESTS" =~ [Yy] ]]; then
+    bash <(curl -sSL "$GITHUB_URL"/ui/nests.sh) || warning "Nest & egg gagal ditambah. Bisa dicoba lagi lewat menu utama."
+  fi
+}
+
 main
 ask_theme
+ask_ddos
+ask_nests
 goodbye

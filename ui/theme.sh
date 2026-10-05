@@ -3,7 +3,8 @@
 set -e
 
 # Pasang / hapus tema malam di Pterodactyl Panel yang SUDAH terinstall.
-# Tema dipasang lewat file CSS + JS di public/themes/night dan satu blok di wrapper.blade.php.
+# Tema dipasang lewat file CSS + JS di public/themes/night dan satu blok di wrapper.blade.php
+# (dashboard & server) serta satu blok di admin.blade.php (area /admin).
 
 # Check if script is loaded, load if not or fail otherwise.
 fn_exists() { declare -F "$1" >/dev/null; }
@@ -17,11 +18,15 @@ PANEL_DIR="${PANEL_DIR:-/var/www/pterodactyl}"
 THEME_DIR="$PANEL_DIR/public/themes/night"
 WRAPPER="$PANEL_DIR/resources/views/templates/wrapper.blade.php"
 BACKUP="$WRAPPER.night-backup"
+ADMIN="$PANEL_DIR/resources/views/layouts/admin.blade.php"
+ADMIN_BACKUP="$ADMIN.night-backup"
 MARK_START="<!-- NIGHT-THEME:START -->"
 MARK_END="<!-- NIGHT-THEME:END -->"
 
 remove_block() {
   sed -i "/NIGHT-THEME:START/,/NIGHT-THEME:END/d" "$WRAPPER"
+  [ -f "$ADMIN" ] && sed -i "/NIGHT-THEME:START/,/NIGHT-THEME:END/d" "$ADMIN"
+  return 0
 }
 
 clear_cache() {
@@ -29,12 +34,12 @@ clear_cache() {
 }
 
 install_theme() {
-  local ts block
+  local ts block ablock
   ts=$(date +%s)
 
   output "Mengunduh file tema dari $GITHUB_URL/theme ..."
   mkdir -p "$THEME_DIR"
-  for f in night.css night.js bg.jpg; do
+  for f in night.css night.js night-admin.css night-admin.js bg.jpg; do
     curl -fsSL -o "$THEME_DIR/$f" "$GITHUB_URL/theme/$f" || {
       error "Gagal mengunduh theme/$f (cek apakah folder theme sudah di-push ke GitHub)."
       exit 1
@@ -63,9 +68,31 @@ BLOCK
     exit 1
   fi
 
+  # Area admin (AdminLTE) memakai layout sendiri: sisipkan CSS + JS tema admin sebelum </head>
+  if [ -f "$ADMIN" ]; then
+    [ -f "$ADMIN_BACKUP" ] || cp "$ADMIN" "$ADMIN_BACKUP"
+    ablock=$(mktemp)
+    cat >"$ablock" <<BLOCK
+        $MARK_START
+        <link rel="stylesheet" href="/themes/night/night-admin.css?v=$ts">
+        <script src="/themes/night/night-admin.js?v=$ts" defer></script>
+        $MARK_END
+BLOCK
+    awk -v bf="$ablock" '/<\/head>/ && !d { while ((getline l < bf) > 0) print l; d=1 } { print }' \
+      "$ADMIN" >"$ADMIN.tmp" && mv "$ADMIN.tmp" "$ADMIN"
+    rm -f "$ablock"
+    chown --reference="$ADMIN_BACKUP" "$ADMIN" 2>/dev/null || true
+    if ! grep -q "NIGHT-THEME:START" "$ADMIN"; then
+      warning "Tema admin gagal dipasang (tag </head> tidak ditemukan di admin.blade.php). Tema dashboard tetap terpasang."
+      cp "$ADMIN_BACKUP" "$ADMIN"
+    fi
+  else
+    warning "File layouts/admin.blade.php tidak ditemukan, tema admin dilewati."
+  fi
+
   clear_cache
-  success "Tema Night terpasang! Buka panel lalu tekan Ctrl+F5 untuk refresh total."
-  output "Catatan: update Pterodactyl akan menimpa wrapper.blade.php. Jalankan menu ini lagi setelah update."
+  success "Tema Night terpasang (dashboard + admin)! Buka panel lalu tekan Ctrl+F5 untuk refresh total."
+  output "Catatan: update Pterodactyl akan menimpa wrapper.blade.php dan admin.blade.php. Jalankan menu ini lagi setelah update."
 }
 
 uninstall_theme() {

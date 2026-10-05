@@ -83,7 +83,9 @@ while [ "$done" == false ]; do
     "Install Panel + Wings canary di satu mesin ([3] lalu [4])"
     "Uninstall Panel atau Wings (versi canary, bisa saja error!)"
 
-    "Pasang / hapus tema Night di Panel yang sudah terinstall"
+    "Pasang / hapus tema Night di Panel yang sudah terinstall (dashboard + admin)"
+    "Pasang / hapus NightGuard: anti-DDoS otomatis di Panel yang sudah terinstall"
+    "Tambah nest + egg Nodejs, Python, dan Minecraft Bedrock di Panel yang sudah terinstall"
   )
 
   actions=(
@@ -98,6 +100,8 @@ while [ "$done" == false ]; do
     "uninstall_canary"
 
     "theme"
+    "ddos"
+    "nests"
   )
 
   echo ""
