@@ -36,7 +36,10 @@
     el.style.setProperty('background-color',
       'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + (x.l < 20 ? 0.62 : 0.52) + ')', 'important');
     var big = el.offsetWidth * el.offsetHeight > window.innerWidth * window.innerHeight * 0.6;
-    if (!big && !(el.parentElement && el.parentElement.closest('[data-night-blur]'))) {
+    // Elemen pendek (baris File Manager, item list) TIDAK diberi blur: backdrop-filter membuat
+    // stacking context sehingga menu dropdown (titik tiga) tertutup baris di bawahnya.
+    var card = el.offsetWidth >= 240 && el.offsetHeight >= 96;
+    if (card && !big && !(el.parentElement && el.parentElement.closest('[data-night-blur]'))) {
       el.setAttribute('data-night-blur', '1');
       el.style.setProperty('-webkit-backdrop-filter', 'blur(8px)');
       el.style.setProperty('backdrop-filter', 'blur(8px)');
@@ -45,7 +48,8 @@
 
   function button(el) {
     var c = parse(getComputedStyle(el).backgroundColor);
-    if (!c || c.a < 0.9) return;
+    if (!c || c.a < 0.1) { el.classList.add('n-plain'); return; }
+    if (c.a < 0.9) return;
     var x = hsl(c), cls = null;
     if (x.s >= 35 && x.h >= 200 && x.h <= 285) cls = 'n-btn-primary';
     else if (x.s >= 30 && x.h >= 80 && x.h <= 170) cls = 'n-btn-green';
@@ -55,10 +59,60 @@
 
   function inTerminal(el) { return el.closest && el.closest('.xterm'); }
 
+  // Kartu server di dashboard = link persis /server/<id>. Link tab (/server/<id>/files) dan
+  // baris File Manager tidak ikut, jadi tidak kena blur / transform.
+  var SERVER_ROW = /^\/server\/[^\/]+\/?$/;
+  function serverRow(el) {
+    var path = el.getAttribute('href');
+    if (path && SERVER_ROW.test(path.split(/[?#]/)[0])) el.classList.add('n-server-row');
+  }
+
+  // Menu dropdown (absolute + z-index) yang terbuka: angkat leluhur yang membuat stacking context
+  // supaya menu tidak tertimpa baris/kartu di bawahnya.
+  var lifted = [], menus = [];
+  function creates(cs) {
+    return (cs.backdropFilter && cs.backdropFilter !== 'none') ||
+           (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none') ||
+           (cs.filter && cs.filter !== 'none') ||
+           (cs.transform && cs.transform !== 'none') ||
+           parseFloat(cs.opacity) < 1 ||
+           (cs.position !== 'static' && cs.zIndex !== 'auto');
+  }
+  function liftFor(menu) {
+    if (menus.indexOf(menu) !== -1) return;
+    menus.push(menu);
+    // menu harus solid supaya teks baris di belakangnya tidak tembus
+    menu.style.setProperty('background-color', 'rgba(12, 18, 52, .98)', 'important');
+    for (var a = menu.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+      var cs = getComputedStyle(a);
+      if (!creates(cs) || a.classList.contains('n-lift')) continue;
+      a.classList.add('n-lift');
+      if (cs.position === 'static') a.classList.add('n-lift-rel');
+      lifted.push(a);
+    }
+  }
+  function unliftIfClosed() {
+    menus = menus.filter(function (m) { return m.isConnected; });
+    if (menus.length) return;
+    while (lifted.length) {
+      var a = lifted.pop();
+      a.classList.remove('n-lift'); a.classList.remove('n-lift-rel');
+    }
+  }
+  function menuLike(el) {
+    if (el.tagName === 'DIV' || el.tagName === 'UL' || el.tagName === 'NAV') {
+      var cs = getComputedStyle(el);
+      var z = parseInt(cs.zIndex, 10);
+      if (cs.position === 'absolute' && z >= 5 && z < 1000) return true;
+    }
+    return false;
+  }
+
   function process(el) {
     if (el.nodeType !== 1 || !el.isConnected || inTerminal(el)) return;
     if (el.tagName === 'BUTTON') button(el);
-    else if (!SKIP[el.tagName]) glass(el);
+    else if (el.tagName === 'A') serverRow(el);
+    else if (!SKIP[el.tagName]) { if (menuLike(el)) liftFor(el); else glass(el); }
   }
 
   function scan(root) {
@@ -68,7 +122,11 @@
     for (var i = 0; i < all.length; i++) process(all[i]);
   }
 
-  var queue = [], timer = null;
+  var queue = [], timer = null, cleanTimer = null;
+  function scheduleClean() {
+    if (cleanTimer) return;
+    cleanTimer = setTimeout(function () { cleanTimer = null; unliftIfClosed(); }, 80);
+  }
   function enqueue(node) {
     queue.push(node);
     if (timer) return;
@@ -110,6 +168,7 @@
         if (inTerminal(m.target)) continue;
         if (m.type === 'attributes') { if (m.target.tagName === 'BUTTON') enqueue(m.target); continue; }
         for (var j = 0; j < m.addedNodes.length; j++) enqueue(m.addedNodes[j]);
+        if (m.removedNodes.length && lifted.length) scheduleClean();
       }
     }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
     welcome();

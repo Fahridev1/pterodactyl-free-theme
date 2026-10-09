@@ -78,8 +78,8 @@ while [ "$done" == false ]; do
     "Install Panel + Wings di satu mesin (Wings jalan setelah Panel)"
     # "Uninstall panel or wings\n"
 
-    "Install Panel versi canary (versi terbaru di master, bisa saja error!)"
-    "Install Wings versi canary (versi terbaru di master, bisa saja error!)"
+    "Install Panel versi canary (versi terbaru di main, bisa saja error!)"
+    "Install Wings versi canary (versi terbaru di main, bisa saja error!)"
     "Install Panel + Wings canary di satu mesin ([3] lalu [4])"
     "Uninstall Panel atau Wings (versi canary, bisa saja error!)"
 

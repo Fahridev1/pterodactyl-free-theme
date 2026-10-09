@@ -35,7 +35,7 @@ export BRAND_NAME=${BRAND_NAME:-"NightPanel Installer"}
 export BRAND_SLUG=${BRAND_SLUG:-"nightpanel-installer"}
 
 # Versioning
-export GITHUB_SOURCE=${GITHUB_SOURCE:-master}
+export GITHUB_SOURCE=${GITHUB_SOURCE:-main}
 export SCRIPT_RELEASE=${SCRIPT_RELEASE:-canary}
 
 # Pterodactyl versions
