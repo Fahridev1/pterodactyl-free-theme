@@ -39,20 +39,28 @@ body.bg-neutral-50, body.bg-neutral-800, body.bg-neutral-900 {
   background-color: var(--n-card) !important;
 }
 
-/* Baris server di dashboard */
-a[href^="/server/"] {
+/* Kartu server di dashboard.
+   Hanya link /server/<id> (tanpa sub-halaman) yang diberi kelas .n-server-row oleh night.js.
+   JANGAN pakai selector a[href^="/server/"] polos: baris File Manager juga link ke /server/..,
+   dan blur/transform di baris membuat stacking context sehingga menu titik tiga tertutup baris lain. */
+a.n-server-row {
   background: var(--n-card) !important;
   border: 1px solid var(--n-line) !important;
   border-radius: 12px !important;
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   transition: transform .18s ease, border-color .18s ease, background .18s ease;
 }
-a[href^="/server/"]:hover {
+a.n-server-row:hover {
   background: var(--n-card-hover) !important;
   border-color: var(--n-amber) !important;
   transform: translateY(-2px);
 }
-a[href^="/server/"] .icon { background: rgba(76, 125, 255, .28) !important; }
+a.n-server-row .icon { background: rgba(76, 125, 255, .28) !important; }
+
+/* Menu dropdown (titik tiga di File Manager, dll) harus selalu di atas baris lain.
+   night.js menambah .n-lift ke leluhur yang membuat stacking context saat menu terbuka. */
+.n-lift { z-index: 60 !important; }
+.n-lift-rel { position: relative !important; }
 
 /* Input */
 input:not([type=checkbox]):not([type=radio]):not([type=range]),
@@ -71,6 +79,8 @@ input:focus, textarea:focus, select:focus {
 button { border-radius: 8px; transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; }
 button:not(:disabled):hover { transform: translateY(-1px); filter: brightness(1.12); }
 button:not(:disabled):active { transform: translateY(0); }
+/* tombol ikon polos (mis. titik tiga) tidak perlu efek angkat: hindari stacking context */
+button.n-plain:not(:disabled):hover, button.n-plain:not(:disabled):active { transform: none; filter: none; }
 .n-btn-primary { background-image: linear-gradient(135deg, #3b6cff, #6f4dff) !important; box-shadow: 0 4px 16px rgba(76, 125, 255, .35); }
 .n-btn-green   { background-image: linear-gradient(135deg, #2f9e5c, #58c27d) !important; box-shadow: 0 4px 16px rgba(63, 160, 100, .30); }
 .n-btn-red     { background-image: linear-gradient(135deg, #d6455d, #ff6b4a) !important; box-shadow: 0 4px 16px rgba(220, 70, 90, .30); }
@@ -99,5 +109,5 @@ a:hover { color: var(--n-amber); }
 .night-welcome-title { font-weight: 600; font-size: 16px; }
 .night-welcome-sub { font-size: 13px; opacity: .75; margin-top: 2px; }
 @media (prefers-reduced-motion: reduce) {
-  .night-welcome, a[href^="/server/"], button { transition: none; }
+  .night-welcome, a.n-server-row, button { transition: none; }
 }

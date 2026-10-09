@@ -4,6 +4,13 @@ This project follows the [semantic versioning](https://semver.org) convention. C
 
 ## Unreleased
 
+### Fixed
+
+- theme: menu titik tiga di File Manager tidak lagi tertutup baris file lain (blur/transform tidak lagi dipasang ke baris file; menu dropdown otomatis diangkat di atas)
+- theme: efek kartu server hanya untuk dashboard (`.n-server-row`), tidak lagi ikut ke link tab dan baris File Manager
+- theme: `ui/theme.sh` ditulis ulang agar aman dan idempotent: unduh ke folder sementara dulu, backup selalu diperbarui, blok lama dibuang hanya kalau penanda START+END lengkap (sebelumnya penanda rusak bisa menghapus isi file blade), ada rollback otomatis, folder `public/themes/pterodactyl` bawaan panel tidak disentuh
+- lib: branch default disamakan jadi `main` (sebelumnya `master`, bikin unduhan tema 404 kalau script dijalankan langsung)
+
 ### Added
 
 - nests: menu + `ui/nests.sh` untuk membuat nest Nodejs, Python, dan Minecraft Bedrock lalu mengimpor egg dari folder `eggs/` (aman dijalankan ulang); ditawarkan juga setelah instalasi Panel

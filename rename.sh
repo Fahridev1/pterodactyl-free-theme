@@ -21,4 +21,4 @@ sed -i "s|USERNAME/REPO|$GH_USER/$REPO|g; s|# NightPanel Installer|# $NAME|; s|N
 sed -i "s|nightpanel-installer|$SLUG|g" README.md
 
 echo "Selesai! Nama: $NAME | Repo: $GH_USER/$REPO"
-echo "Cek: $RAW/master/install.sh"
+echo "Cek: $RAW/main/install.sh"
